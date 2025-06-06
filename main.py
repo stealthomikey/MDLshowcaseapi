@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-iteams = []
+items = []
 
 @app.get("/")
 def read_root():
@@ -10,5 +10,10 @@ def read_root():
 
 @app.post("/items")
 def create_item(item: str):
-    iteams.append(item)
-    return iteams 
+    items.append(item)
+    return items 
+
+@app.get("/items/{item_id}")
+def get_item(item_id: int):
+    item = items[item_id]
+    return item

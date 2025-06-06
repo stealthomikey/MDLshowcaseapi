@@ -1,6 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 app = FastAPI()
+
+class Item(BaseModel):
+    name: str
+    description: str = None
+    price: float
 
 items = []
 
@@ -13,7 +19,13 @@ def create_item(item: str):
     items.append(item)
     return items 
 
+@appl.get("/items")
+def list_items(limit: int = 10):
+    return items[0:limit]
+
 @app.get("/items/{item_id}")
 def get_item(item_id: int):
-    item = items[item_id]
-    return item
+    if item_id < len(items):
+        return items[item_id]
+    else:
+        raise HTTPException(status_code=404, detail=f"Item with ID {item_id} not found")
